@@ -116,6 +116,26 @@ while ($row = $result->fetchArray())
 	}
 }
 
+echo "Converting table 'wiki'...\n";
+
+// Convert table 'wiki'
+
+$i = 1;
+
+$result = $db->query('SELECT * FROM wiki');
+while ($row = $result->fetchArray())
+{
+       $text = $db->escapeString($row['text']);
+       if (convertSVNIDToGitID($text, $lookupTable, $nrHashCharacters))
+       {
+               $query = "UPDATE wiki SET text='$text' WHERE name = '" . $row['name'] . "'";
+               $db->exec($query);
+
+               echo "Updated wiki $i\n";
+       }
+}
+
+
 // Done :)
 echo "Done!\n";
 ?>
